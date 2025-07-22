@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JoyShree Domain Strategy Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Serene Neutrals & Earth Tones -->
+    <!-- Application Structure Plan: A single-page dashboard structure with a sticky navigation for easy access to different sections. It starts with the core strategic pillars presented as interactive cards. This is followed by a visual comparison of domain recommendations using a bar chart. A cost analysis section makes the budget considerations tangible. Finally, an interactive checklist and a domain simulator provide actionable tools for the user. This structure logically guides the user from understanding the 'why' to the 'what' and 'how', making the report's content more of an active tool than a passive document. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core strategy principles (Brand Identity, SEO, etc.) -> Goal: Inform -> Viz/Method: Interactive cards (HTML/CSS/JS) -> Interaction: Click to reveal details -> Justification: Breaks down complex info into digestible chunks.
+        - Report Info: Domain recommendations (.in, .shop, etc.) -> Goal: Compare -> Viz/Method: Horizontal Bar Chart (Chart.js/Canvas) -> Interaction: Hover tooltips for details -> Justification: Provides an immediate visual hierarchy of priorities.
+        - Report Info: Cost considerations -> Goal: Inform/Analyze -> Viz/Method: Styled table/cards -> Interaction: Static display for clarity -> Justification: Clearly contrasts initial vs. long-term costs.
+        - Report Info: Actionable steps -> Goal: Organize/Engage -> Viz/Method: Interactive Checklist & Simulator (HTML/JS) -> Interaction: Click to complete tasks, type to simulate -> Justification: Empowers the user to apply the strategy directly.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D352F;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #A47F6A;
+            border-bottom-color: #A47F6A;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+        }
+        .btn-primary {
+            background-color: #8B7264;
+            color: #FFFFFF;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #715b50;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .section-title {
+            color: #3D352F;
+        }
+        .section-subtitle {
+            color: #715b50;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-[#F8F7F4] sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-[#8B7264]">JoyShree<span class="font-light text-[#A47F6A]"> | Domain Strategy</span></h1>
+                </div>
+                <nav class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#strategy" class="nav-link px-3 py-2 text-sm font-medium">Strategy</a>
+                        <a href="#recommendations" class="nav-link px-3 py-2 text-sm font-medium">Recommendations</a>
+                        <a href="#costs" class="nav-link px-3 py-2 text-sm font-medium">Cost Analysis</a>
+                        <a href="#actions" class="nav-link px-3 py-2 text-sm font-medium">Action Plan</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Section 1: Core Strategy -->
+        <section id="strategy" class="my-12 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center section-title">The "Why": Core Strategic Pillars</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-center text-lg section-subtitle">Understanding these key areas is the foundation for making smart domain choices. Click on each pillar to learn more about its importance for the JoyShree brand.</p>
+            <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                
+                <div class="card p-6 text-center cursor-pointer" onclick="toggleDetails('details-identity')">
+                    <div class="text-4xl">👑</div>
+                    <h3 class="mt-4 text-xl font-semibold">Brand Identity</h3>
+                    <p id="details-identity" class="mt-2 text-gray-600 text-sm hidden">Your domain is your digital address. It should be memorable and consistent with the "JoyShree" name to reinforce your brand. While not product-specific, its positive meaning of "Joy" is a strong asset.</p>
+                </div>
+
+                <div class="card p-6 text-center cursor-pointer" onclick="toggleDetails('details-audience')">
+                    <div class="text-4xl">🎯</div>
+                    <h3 class="mt-4 text-xl font-semibold">Audience & Reach</h3>
+                     <p id="details-audience" class="mt-2 text-gray-600 text-sm hidden">The domain extension (like .in or .com) signals who you're for. A `.in` builds trust in India, while `.com` is for a global audience. E-commerce extensions like `.shop` clearly state your purpose.</p>
+                </div>
+
+                <div class="card p-6 text-center cursor-pointer" onclick="toggleDetails('details-seo')">
+                    <div class="text-4xl">📈</div>
+                    <h3 class="mt-4 text-xl font-semibold">SEO & Discoverability</h3>
+                     <p id="details-seo" class="mt-2 text-gray-600 text-sm hidden">While the domain itself is just one part of SEO, owning multiple relevant domains and redirecting them to your main site helps consolidate traffic and authority, making you easier to find on search engines.</p>
+                </div>
+
+                <div class="card p-6 text-center cursor-pointer" onclick="toggleDetails('details-protection')">
+                    <div class="text-4xl">🛡️</div>
+                    <h3 class="mt-4 text-xl font-semibold">Brand Protection</h3>
+                    <p id="details-protection" class="mt-2 text-gray-600 text-sm hidden">Owning key domain variations prevents competitors or bad actors from registering them. This protects your customers from confusion and safeguards your brand's reputation from misuse.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Recommendations -->
+        <section id="recommendations" class="my-24 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center section-title">The "What": Domain Recommendations</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-center text-lg section-subtitle">Based on the strategy, here is a visual priority list for domains. A higher score indicates a stronger recommendation for the JoyShree brand at this stage.</p>
+            <div class="mt-12 card p-4 md:p-8">
+                <div class="chart-container">
+                    <canvas id="domainChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 3: Cost Analysis -->
+        <section id="costs" class="my-24 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center section-title">The "How Much": Cost & Budgeting</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-center text-lg section-subtitle">A key part of your strategy is understanding the long-term budget. First-year costs can be deceptively low, but renewal prices are the true measure of your investment.</p>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card p-6 text-center border-t-4 border-[#A47F6A]">
+                    <h3 class="text-lg font-semibold">.in</h3>
+                    <p class="text-3xl font-bold mt-2 text-[#8B7264]">₹799-999</p>
+                    <p class="text-sm text-gray-500">Typical Annual Renewal</p>
+                </div>
+                <div class="card p-6 text-center border-t-4 border-[#A47F6A]">
+                    <h3 class="text-lg font-semibold">.com</h3>
+                    <p class="text-3xl font-bold mt-2 text-[#8B7264]">₹1199-1799</p>
+                    <p class="text-sm text-gray-500">Typical Annual Renewal</p>
+                </div>
+                <div class="card p-6 text-center border-t-4 border-[#c7b2a6]">
+                    <h3 class="text-lg font-semibold">.shop / .store</h3>
+                    <p class="text-3xl font-bold mt-2 text-[#8B7264]">₹2799-3899</p>
+                    <p class="text-sm text-gray-500">Typical Annual Renewal</p>
+                </div>
+                <div class="card p-6 text-center border-t-4 border-[#c7b2a6]">
+                    <h3 class="text-lg font-semibold">.online</h3>
+                    <p class="text-3xl font-bold mt-2 text-[#8B7264]">₹4599-5899</p>
+                    <p class="text-sm text-gray-500">Typical Annual Renewal</p>
+                </div>
+            </div>
+            <p class="text-center mt-6 text-sm text-gray-600">*Prices are estimates and vary by registrar. Always check the renewal cost before purchasing.</p>
+        </section>
+
+        <!-- Section 4: Action Plan -->
+        <section id="actions" class="my-24 scroll-mt-20">
+             <h2 class="text-3xl md:text-4xl font-bold text-center section-title">The "How To": Your Action Plan</h2>
+             <p class="mt-4 max-w-3xl mx-auto text-center text-lg section-subtitle">Use these interactive tools to put your domain strategy into action.</p>
+            <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Checklist -->
+                <div class="card p-8">
+                    <h3 class="text-2xl font-semibold text-center">Acquisition Checklist</h3>
+                    <ul id="checklist" class="mt-6 space-y-4">
+                        <!-- JS will populate this -->
+                    </ul>
+                </div>
+                <!-- Simulator -->
+                <div class="card p-8">
+                     <h3 class="text-2xl font-semibold text-center">Domain Idea Simulator</h3>
+                     <p class="text-center text-gray-600 mt-2 text-sm">Test potential domain ideas here.</p>
+                     <div class="mt-6 flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="domain-input" placeholder="e.g., joyshreeglobal.com" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#A47F6A] focus:border-[#A47F6A]">
+                        <button id="simulate-btn" class="btn-primary px-6 py-2 rounded-md font-semibold">Analyze</button>
+                     </div>
+                     <div id="simulator-result" class="mt-4 p-4 rounded-md text-center min-h-[60px]">
+                         <!-- Result appears here -->
+                     </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#e9e5e1] mt-16">
+        <div class="container mx-auto py-6 px-4 text-center text-[#715b50]">
+            <p>&copy; 2025 JoyShree Brand Strategy. This dashboard/informational tool has been created by Ai Cafe, Vijaypur.</p>
+            <p class="text-xs mt-1">Remember to register your primary domains and set up redirects for the secondary ones.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data for the application
+        const domainData = {
+            labels: ['.in (Primary)', '.shop / .store', '.com (Global)', '.online (Optional)'],
+            scores: [95, 85, 80, 60],
+            reasons: [
+                'Crucial for establishing a strong local presence and trust in the primary Indian market.',
+                'Explicitly communicates that your website is an e-commerce platform. Excellent for marketing.',
+                'The global standard. Highly recommended if future international expansion is a possibility.',
+                'A good secondary option for additional brand protection, but lower priority than others.'
+            ]
+        };
+
+        const checklistItems = [
+            "Decide on the primary domain (e.g., joyshree.in).",
+            "Check availability of primary and secondary domains.",
+            "Check for matching social media handles (Instagram, Facebook, etc.).",
+            "Compare registrars for both 1st year AND renewal costs.",
+            "Purchase the prioritized domains (.in, .shop, .com if available).",
+            "Set up redirects from secondary domains to the primary one.",
+            "Add domain to your web hosting account."
+        ];
+
+        // --- Chart.js Implementation ---
+        const ctx = document.getElementById('domainChart').getContext('2d');
+        const domainChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: domainData.labels,
+                datasets: [{
+                    label: 'Priority Score',
+                    data: domainData.scores,
+                    backgroundColor: [
+                        'rgba(139, 114, 100, 0.7)',
+                        'rgba(164, 127, 106, 0.7)',
+                        'rgba(199, 178, 166, 0.7)',
+                        'rgba(210, 196, 188, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(139, 114, 100, 1)',
+                        'rgba(164, 127, 106, 1)',
+                        'rgba(199, 178, 166, 1)',
+                        'rgba(210, 196, 188, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterBody: function(context) {
+                                const index = context[0].dataIndex;
+                                return domainData.reasons[index].match(/.{1,40}(\s|$)/g).join('\n');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Importance / Priority Score'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                           font: {
+                               size: 14
+                           }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Interactive Cards ---
+        function toggleDetails(id) {
+            const element = document.getElementById(id);
+            element.classList.toggle('hidden');
+        }
+
+        // --- Checklist Population & Interaction ---
+        const checklistContainer = document.getElementById('checklist');
+        checklistItems.forEach(itemText => {
+            const li = document.createElement('li');
+            li.className = "flex items-center";
+            li.innerHTML = `
+                <label class="flex items-center cursor-pointer">
+                    <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#A47F6A] focus:ring-[#A47F6A] mr-3 check-item">
+                    <span class="text-gray-700">${itemText}</span>
+                </label>
+            `;
+            checklistContainer.appendChild(li);
+        });
+        
+        document.querySelectorAll('.check-item').forEach(item => {
+            item.addEventListener('change', event => {
+                const labelText = event.target.nextElementSibling;
+                if(event.target.checked) {
+                    labelText.classList.add('line-through', 'text-gray-400');
+                } else {
+                    labelText.classList.remove('line-through', 'text-gray-400');
+                }
+            });
+        });
+
+        // --- Domain Simulator ---
+        const simulateBtn = document.getElementById('simulate-btn');
+        const domainInput = document.getElementById('domain-input');
+        const resultDiv = document.getElementById('simulator-result');
+
+        simulateBtn.addEventListener('click', () => {
+            const domain = domainInput.value.toLowerCase().trim();
+            let message = '';
+            let bgColor = '';
+
+            if (domain === '') {
+                message = 'Please enter a domain idea to analyze.';
+                bgColor = 'bg-yellow-100';
+            } else if (domain.endsWith('.in')) {
+                 message = '<strong>Excellent choice!</strong> `.in` is perfect for targeting the Indian market and building local trust.';
+                 bgColor = 'bg-green-100';
+            } else if (domain.endsWith('.com')) {
+                 message = '<strong>Strong contender!</strong> `.com` is the global standard, great for future international expansion.';
+                 bgColor = 'bg-green-100';
+            } else if (domain.endsWith('.shop') || domain.endsWith('.store')) {
+                 message = '<strong>Great for e-commerce!</strong> This clearly tells customers you are an online store.';
+                 bgColor = 'bg-blue-100';
+            } else if (domain.endsWith('.org')) {
+                 message = '<strong>Caution:</strong> `.org` is for non-profits and may confuse retail customers.';
+                 bgColor = 'bg-yellow-100';
+            } else if (domain.endsWith('.net')) {
+                message = '<strong>Consider alternatives.</strong> `.net` is less common for e-commerce and not a top recommendation.';
+                bgColor = 'bg-yellow-100';
+            } else if (!domain.includes('.')) {
+                message = 'Please include a domain extension like `.com` or `.in`.';
+                bgColor = 'bg-red-100';
+            } else {
+                message = `The extension <strong>.${domain.split('.').pop()}</strong> is a less common choice. Consider sticking to the primary recommendations.`;
+                bgColor = 'bg-gray-100';
+            }
+            resultDiv.className = `mt-4 p-4 rounded-md text-center ${bgColor} transition-all duration-300`;
+            resultDiv.innerHTML = message;
+        });
+
+        // --- Active Nav Link Scrolling ---
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+
+        window.onscroll = () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 70) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        };
+    </script>
+</body>
+</html>
